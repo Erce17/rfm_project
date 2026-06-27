@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RFM Analizi — Ahmet Erce Kıyar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #ffffff;
+      --surface: #f8f9fb;
+      --border: #e2e6ed;
+      --platin: #b45309;
+      --altin: #1d4ed8;
+      --gumus: #64748b;
+      --text: #0f172a;
+      --muted: #64748b;
+      --accent: #b45309;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 24px 60px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 28px;
+      font-weight: 500;
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+      color: #0f172a;
+    }
+
+    h1 span {
+      color: var(--accent);
+    }
+
+    .hero-desc {
+      max-width: 560px;
+      color: var(--muted);
+      font-size: 16px;
+      margin-bottom: 48px;
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 48px;
+    }
+
+    .tag {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 4px 12px;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.85; }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    /* STATS */
+    .stats-section {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .stats-grid {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 56px 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 40px;
+    }
+
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.6rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* SECTIONS */
+    .section {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 72px 24px;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #0f172a;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* CLUSTERS */
+    .cluster-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .cluster-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+    }
+
+    .cluster-card.platin { border-top: 3px solid var(--platin); }
+    .cluster-card.altin  { border-top: 3px solid var(--altin); }
+    .cluster-card.gumus  { border-top: 3px solid var(--gumus); }
+
+    .cluster-name {
+      font-weight: 600;
+      font-size: 15px;
+      margin-bottom: 16px;
+    }
+    .cluster-card.platin .cluster-name { color: var(--platin); }
+    .cluster-card.altin  .cluster-name { color: var(--altin); }
+    .cluster-card.gumus  .cluster-name { color: var(--gumus); }
+
+    .cluster-metric {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .cluster-metric:last-child { border-bottom: none; }
+    .cluster-metric .val { font-weight: 600; color: #0f172a; }
+    .cluster-metric .key { color: var(--muted); }
+
+    /* PARETO BAR */
+    .pareto-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 28px;
+    }
+
+    .pareto-row {
+      margin-bottom: 20px;
+    }
+
+    .pareto-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .pareto-label .name { color: var(--text); font-weight: 500; }
+    .pareto-label .pct  { color: var(--accent); font-weight: 700; }
+
+    .bar-track {
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 1s ease;
+    }
+    .bar-platin { background: var(--platin); }
+    .bar-altin  { background: var(--altin); }
+    .bar-gumus  { background: var(--gumus); }
+
+    /* COHORT HIGHLIGHT */
+    .cohort-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .cohort-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+    }
+
+    .cohort-big {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .cohort-sub {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* YÖNTEM */
+    .method-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .method-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    .method-icon {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .method-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: #0f172a;
+    }
+
+    .method-desc {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 24px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    @media (max-width: 600px) {
+      .cohort-grid { grid-template-columns: 1fr; }
+      .cta-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <section class="hero">
+    <p class="eyebrow">Veri Bilimi Projesi — 2025</p>
+    <h1>E-Ticaret'te<br /><span>RFM Analizi</span> ile<br />Müşteri Segmentasyonu</h1>
+    <p class="hero-desc">
+      541.909 işlem kaydı içeren gerçek bir e-ticaret veri seti üzerinde RFM skoru, K-Means kümeleme ve cohort analizi uygulanarak müşteri davranış örüntüleri ortaya konuldu.
+    </p>
+    <div class="hero-tags">
+      <span class="tag">Python</span>
+      <span class="tag">pandas</span>
+      <span class="tag">scikit-learn</span>
+      <span class="tag">matplotlib</span>
+      <span class="tag">seaborn</span>
+      <span class="tag">K-Means</span>
+      <span class="tag">CRISP-DM</span>
+    </div>
+    <div class="cta-row">
+      <a href="./rapor.pdf" class="btn btn-primary" target="_blank">📄 Raporu Oku</a>
+      <a href="https://github.com/Erce17/rfm_project" class="btn btn-outline" target="_blank">⌥ GitHub'da Gör</a>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-section">
+    <div class="stats-grid">
+      <div>
+        <div class="stat-num">541K</div>
+        <div class="stat-label">Ham işlem kaydı</div>
+      </div>
+      <div>
+        <div class="stat-num">4.338</div>
+        <div class="stat-label">Benzersiz müşteri</div>
+      </div>
+      <div>
+        <div class="stat-num">8</div>
+        <div class="stat-label">RFM segmenti</div>
+      </div>
+      <div>
+        <div class="stat-num">%79,9</div>
+        <div class="stat-label">Platin müşteri gelir payı</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KÜMELER -->
+  <section class="section">
+    <h2 class="section-title">K-Means Kümeleme Sonuçları</h2>
+    <div class="cluster-grid">
+
+      <div class="cluster-card platin">
+        <div class="cluster-name">🥇 Platin Müşteri</div>
+        <div class="cluster-metric"><span class="key">Müşteri sayısı</span><span class="val">1.335</span></div>
+        <div class="cluster-metric"><span class="key">Ort. Recency</span><span class="val">30 gün</span></div>
+        <div class="cluster-metric"><span class="key">Ort. Frequency</span><span class="val">9,8 sipariş</span></div>
+        <div class="cluster-metric"><span class="key">Ort. Monetary</span><span class="val">£4.555</span></div>
+        <div class="cluster-metric"><span class="key">Gelir payı</span><span class="val">%79,9</span></div>
+      </div>
+
+      <div class="cluster-card altin">
+        <div class="cluster-name">🥈 Altın Müşteri</div>
+        <div class="cluster-metric"><span class="key">Müşteri sayısı</span><span class="val">2.022</span></div>
+        <div class="cluster-metric"><span class="key">Ort. Recency</span><span class="val">54 gün</span></div>
+        <div class="cluster-metric"><span class="key">Ort. Frequency</span><span class="val">2,0 sipariş</span></div>
+        <div class="cluster-metric"><span class="key">Ort. Monetary</span><span class="val">£578</span></div>
+        <div class="cluster-metric"><span class="key">Gelir payı</span><span class="val">%15,4</span></div>
+      </div>
+
+      <div class="cluster-card gumus">
+        <div class="cluster-name">🥉 Gümüş Müşteri</div>
+        <div class="cluster-metric"><span class="key">Müşteri sayısı</span><span class="val">981</span></div>
+        <div class="cluster-metric"><span class="key">Ort. Recency</span><span class="val">255 gün</span></div>
+        <div class="cluster-metric"><span class="key">Ort. Frequency</span><span class="val">1,4 sipariş</span></div>
+        <div class="cluster-metric"><span class="key">Ort. Monetary</span><span class="val">£367</span></div>
+        <div class="cluster-metric"><span class="key">Gelir payı</span><span class="val">%4,7</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- GELİR DAĞILIMI -->
+  <section class="section" style="padding-top: 0">
+    <h2 class="section-title">Pareto İlkesi — Gelir Dağılımı</h2>
+    <div class="pareto-wrap">
+      <div class="pareto-row">
+        <div class="pareto-label">
+          <span class="name">Platin Müşteriler <span style="color:var(--muted); font-weight:400">(müşterilerin %31'i)</span></span>
+          <span class="pct">%79,9</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill bar-platin" style="width:79.9%"></div></div>
+      </div>
+      <div class="pareto-row">
+        <div class="pareto-label">
+          <span class="name">Altın Müşteriler</span>
+          <span class="pct">%15,4</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill bar-altin" style="width:15.4%"></div></div>
+      </div>
+      <div class="pareto-row" style="margin-bottom:0">
+        <div class="pareto-label">
+          <span class="name">Gümüş Müşteriler</span>
+          <span class="pct">%4,7</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill bar-gumus" style="width:4.7%"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COHORT -->
+  <section class="section" style="padding-top: 0">
+    <h2 class="section-title">Cohort Analizi Öne Çıkanlar</h2>
+    <div class="cohort-grid">
+      <div class="cohort-card">
+        <div class="cohort-big">%20,6</div>
+        <div class="cohort-sub">Ortalama birinci ay müşteri elde tutma oranı — yeni müşteri onboarding'i iyileştirme fırsatına işaret ediyor</div>
+      </div>
+      <div class="cohort-card">
+        <div class="cohort-big">%36,6</div>
+        <div class="cohort-sub">Aralık 2010 cohort grubu — en yüksek birinci ay elde tutma oranına sahip grup</div>
+      </div>
+      <div class="cohort-card">
+        <div class="cohort-big">13</div>
+        <div class="cohort-sub">Analiz edilen aylık cohort grubu sayısı (Ara 2010 – Ara 2011)</div>
+      </div>
+      <div class="cohort-card">
+        <div class="cohort-big">%11,1</div>
+        <div class="cohort-sub">Kasım 2011 cohort grubu — en düşük elde tutma oranı (yeni ve alışkanlık oluşturmamış müşteriler)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- YÖNTEM -->
+  <section class="section" style="padding-top: 0">
+    <h2 class="section-title">Kullanılan Yöntemler</h2>
+    <div class="method-list">
+      <div class="method-item">
+        <div class="method-icon">📐</div>
+        <div class="method-name">RFM Skorlama</div>
+        <div class="method-desc">Quantile tabanlı 1–5 arası skorlama ile 8 müşteri segmenti oluşturuldu</div>
+      </div>
+      <div class="method-item">
+        <div class="method-icon">🔵</div>
+        <div class="method-name">K-Means Kümeleme</div>
+        <div class="method-desc">Elbow + Silhouette yöntemiyle optimal k=3 belirlendi (skor: 0.4165)</div>
+      </div>
+      <div class="method-item">
+        <div class="method-icon">📅</div>
+        <div class="method-name">Cohort Analizi</div>
+        <div class="method-desc">İlk alışveriş ayına göre aylık elde tutma oranları ısı haritasıyla görselleştirildi</div>
+      </div>
+      <div class="method-item">
+        <div class="method-icon">🧹</div>
+        <div class="method-name">Veri Temizleme</div>
+        <div class="method-desc">541K → 387K kayıt; eksik ID, iade, duplicate ve aykırı değer temizliği (Winsorization)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>Ahmet Erce Kıyar &nbsp;·&nbsp;
+      <a href="https://github.com/Erce17/rfm_project" target="_blank">GitHub</a>
+      &nbsp;·&nbsp;
+      <a href="./rapor.pdf" target="_blank">Rapor (PDF)</a>
+    </p>
+  </footer>
+
+</body>
+</html>
